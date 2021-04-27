@@ -1,41 +1,156 @@
-import React, {useState, useEffect} from 'react';
-import {ScrollView, StyleSheet} from 'react-native';
-import {View, Header, Body, Text} from 'native-base';
+import React, {Component} from 'react';
+import {
+  ScrollView,
+  SafeAreaView,
+  FlatList,
+  StyleSheet,
+  StatusBar,
+} from 'react-native';
+import {
+  View,
+  Container,
+  Header,
+  Item,
+  Icon,
+  Input,
+  Button,
+  Text,
+} from 'native-base';
 import apiFood from './../config/endpoint';
 import ItemFood from './ItemFood';
 
-function Index({navigation}) {
-  const [data, setData] = useState([]);
+class Menu extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      search: '',
+    };
+    this.arrayholder = [];
+    // this.handleClick = this.handleClick.bind(this);
+  }
 
-  const loadData = async () => {
+  navigate = this.props.navigation;
+
+  loadData = async () => {
     const response = await apiFood.index();
-    setData(response.data);
+    this.setState({
+      data: response.data,
+    });
+
+    this.arrayholder = response.data;
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  handleSearch = async data => {
+    const response = await apiFood.search(data);
+    this.setState({
+      data: response.data,
+    });
+  };
 
-  return (
-    <View>
-      <ScrollView>
-        {data.map((item, index) => {
-          return (
+  onChange = e => {
+    this.setState({
+      [e.target.id]: e.target.value,
+    });
+    this.handleSearch(e.target.value);
+  };
+
+  searchFilterFunction = text => {
+    const newData = this.arrayholder.filter(item => {
+      const itemData = `${item.name.toUpperCase()}`;
+      const textData = text.toUpperCase();
+
+      return itemData.indexOf(textData) > -1;
+    });
+
+    this.setState({data: newData});
+  };
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  // componentDidUpdate() {
+  //   this.loadData();
+  // }
+
+  renderHeader = () => {
+    return (
+      <Header searchBar rounded>
+        <Item>
+          <Input
+            // value={this.state.search}
+            autoCorrect={false}
+            onChangeText={text => this.searchFilterFunction(text)}
+            // autoCompleteType={'off'}
+            placeholder="Search"
+          />
+        </Item>
+        <Button transparent>
+          <Text>Search</Text>
+        </Button>
+      </Header>
+    );
+  };
+
+  render() {
+    return (
+      <View>
+        <FlatList
+          data={this.state.data}
+          renderItem={({item}) => (
             <ItemFood
               id={item._id}
               key={item._id}
               img={item.cover}
               title={item.name}
-              navigation={navigation}
+              navigation={this.navigate}
             />
-          );
-        })}
-      </ScrollView>
-    </View>
-  );
+          )}
+          keyExtractor={item => item._id}
+          ItemSeparatorComponent={this.renderSeparator}
+          ListHeaderComponent={this.renderHeader}
+          stickyHeaderIndices={[0]}
+        />
+      </View>
+    );
+  }
 }
 
-export default Index;
+export default Menu;
+
+// function Index({navigation}) {
+//   const [data, setData] = useState([]);
+
+//   const loadData = async () => {
+//     const response = await apiFood.index();
+//     setData(response.data);
+//   };
+
+//   useEffect(() => {
+//     loadData();
+//   }, []);
+
+//   return (
+//     <View>
+//       <ScrollView>
+//         {data.map((item, index) => {
+//           return (
+//             <ItemFood
+//               id={item._id}
+//               key={item._id}
+//               img={item.cover}
+//               title={item.name}
+//               navigation={navigation}
+//             />
+//           );
+//         })}
+//       </ScrollView>
+//     </View>
+//   );
+// }
+
+// export default Index;
 
 const styles = StyleSheet.create({
   container: {
