@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {View} from 'native-base';
 import {dataUrl} from './../config/config';
+import Carousel from 'react-native-snap-carousel';
 
 export default function ItemFood(props) {
   const handleToDetail = () => {

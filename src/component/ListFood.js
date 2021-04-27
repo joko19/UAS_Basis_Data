@@ -76,14 +76,15 @@ class Menu extends Component {
 
   renderHeader = () => {
     return (
-      <Header searchBar rounded>
-        <Item>
+      <Header searchBar rounded style={{backgroundColor:'white'}}>
+        <Item style={{backgroundColor:'#F5F4F4'}}>
           <Input
+            style={{paddingLeft:15, color:'#1b1717'}}
             // value={this.state.search}
             autoCorrect={false}
             onChangeText={text => this.searchFilterFunction(text)}
             // autoCompleteType={'off'}
-            placeholder="Search"
+            placeholder="Search your food..."
           />
         </Item>
         <Button transparent>
