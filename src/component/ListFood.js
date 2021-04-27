@@ -1,11 +1,5 @@
 import React, {Component} from 'react';
-import {
-  ScrollView,
-  SafeAreaView,
-  FlatList,
-  StyleSheet,
-  StatusBar,
-} from 'react-native';
+import {FlatList, StyleSheet, ActivityIndicator} from 'react-native';
 import {
   View,
   Container,
@@ -25,10 +19,15 @@ class Menu extends Component {
     this.state = {
       data: [],
       search: '',
+      loading: false,
+      animating: true,
     };
     this.arrayholder = [];
     // this.handleClick = this.handleClick.bind(this);
   }
+
+  closeActivityIndicator = () => setTimeout(() => this.setState({
+    animating: false }), 60000)
 
   navigate = this.props.navigation;
 
@@ -67,7 +66,18 @@ class Menu extends Component {
   };
 
   componentDidMount() {
-    this.loadData();
+    this.setState({
+      loading: true,
+    });
+    this.closeActivityIndicator()
+  }
+
+  componentDidMount() {
+    if (this.loadData()) {
+      this.setState({
+        loading: false,
+      });
+    }
   }
 
   // componentDidUpdate() {
@@ -76,10 +86,10 @@ class Menu extends Component {
 
   renderHeader = () => {
     return (
-      <Header searchBar rounded style={{backgroundColor:'white'}}>
-        <Item style={{backgroundColor:'#F5F4F4'}}>
+      <Header searchBar rounded style={{backgroundColor: 'white'}}>
+        <Item style={{backgroundColor: '#F5F4F4'}}>
           <Input
-            style={{paddingLeft:15, color:'#1b1717'}}
+            style={{paddingLeft: 15, color: '#1b1717'}}
             // value={this.state.search}
             autoCorrect={false}
             onChangeText={text => this.searchFilterFunction(text)}
@@ -95,24 +105,31 @@ class Menu extends Component {
   };
 
   render() {
+    const animating = this.state.animating;
     return (
       <View>
-        <FlatList
-          data={this.state.data}
-          renderItem={({item}) => (
-            <ItemFood
-              id={item._id}
-              key={item._id}
-              img={item.cover}
-              title={item.name}
-              navigation={this.navigate}
-            />
-          )}
-          keyExtractor={item => item._id}
-          ItemSeparatorComponent={this.renderSeparator}
-          ListHeaderComponent={this.renderHeader}
-          stickyHeaderIndices={[0]}
-        />
+        {this.state.loading == false ? (
+          <FlatList
+            data={this.state.data}
+            renderItem={({item}) => (
+              <ItemFood
+                id={item._id}
+                key={item._id}
+                img={item.cover}
+                title={item.name}
+                navigation={this.navigate}
+              />
+            )}
+            keyExtractor={item => item._id}
+            ItemSeparatorComponent={this.renderSeparator}
+            ListHeaderComponent={this.renderHeader}
+            stickyHeaderIndices={[0]}
+          />
+        ) : (
+          <View style={styles.loading}>
+            <ActivityIndicator animating = {animating} size="large" color="#0000ff" />
+          </View>
+        )}
       </View>
     );
   }
@@ -172,5 +189,15 @@ const styles = StyleSheet.create({
   cardImage: {
     height: 180,
     width: 130,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,.2)',
   },
 });
