@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {StyleSheet, Image} from 'react-native';
 import {View, Text, Button} from 'native-base';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import SplashScreen from 'react-native-splash-screen';
 
 function Menu({navigation}) {
   const toDetail = params => {
     navigation.navigate(params);
   };
+
+  // Similar to componentDidMount and componentDidUpdate:
+  useEffect(() => {
+    // Update the document title using the browser API
+    SplashScreen.hide();
+  });
 
   return (
     <View style={styles.container}>
