@@ -29,6 +29,7 @@ class Menu extends Component {
       search: '',
       loading: false,
       animating: true,
+      itemsCount: 5,
     };
     this.arrayholder = [];
     // this.handleClick = this.handleClick.bind(this);
@@ -115,7 +116,14 @@ class Menu extends Component {
   };
 
   render() {
+    var sortRandomData = this.state.data.sort(() => 0.5 - Math.random()).splice(0, this.state.itemsCount)
+    var allData = this.state.data.splice(0, this.state.itemsCount)
     const dataList = [
+      {
+        title: 'Recommended for you',
+        horizontal: true,
+        data: sortRandomData,
+      },
       {
         title: 'From gresik',
         horizontal: true,
@@ -124,7 +132,7 @@ class Menu extends Component {
       {
         title: 'All around you',
         horizontal: true,
-        data: this.state.data.filter(item => item.from !== 'GRESIK'),
+        data: allData,
       },
     ];
 
@@ -153,6 +161,7 @@ class Menu extends Component {
                           navigation={this.navigate}
                         />
                       )}
+                      initialNumToRender={10}
                       showsHorizontalScrollIndicator={false}
                     />
                   ) : null}

@@ -26,7 +26,8 @@ export default function ItemFood(props) {
 
 const styles = StyleSheet.create({
   item: {
-    margin: 10,
+    marginHorizontal: 15,
+    marginVertical: 10,
   },
   itemPhoto: {
     borderRadius: 15,
