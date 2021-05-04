@@ -52,7 +52,7 @@ function TabBar() {
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
-          if (route.name === 'Feed') {
+          if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'About') {
             // iconName = focused
@@ -81,7 +81,7 @@ function TabBar() {
         inactiveTintColor: 'gray',
         style: {paddingBottom: 5, height: 55},
       }}>
-      <Tab.Screen name="Feed" component={Feed} />
+      <Tab.Screen name="Home" component={Feed} />
       <Tab.Screen name="About" component={AboutApp} />
       <Tab.Screen name="More Info" component={MoreInformation} />
     </Tab.Navigator>

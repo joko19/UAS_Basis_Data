@@ -2,7 +2,19 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
 import apiFood from './../config/endpoint';
 import {dataUrl} from './../config/config';
-import {Container} from 'native-base';
+// import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  Container,
+  Header,
+  Left,
+  Body,
+  Right,
+  Title,
+  Subtitle,
+  Button,
+  Content,
+  Icon,
+} from 'native-base';
 
 function DetailFood(props) {
   const id = props.route.params.id;
@@ -20,7 +32,7 @@ function DetailFood(props) {
   };
 
   const handleBack = () => {
-    props.navigation.navigate('index');
+    props.navigation.navigate('listFood');
   };
 
   useEffect(() => {
@@ -29,11 +41,18 @@ function DetailFood(props) {
 
   return (
     <Container>
+      <Header>
+        <Left>
+          <Button transparent onPress={handleBack}>
+            <Icon name="chevron-back" />
+          </Button>
+        </Left>
+        <Body>
+          <Title style={{fontFamily: 'Inter-Bold'}}>Detail Food</Title>
+        </Body>
+      </Header>
       <ScrollView>
-        <Image
-          style={styles.cover}
-          source={{uri: dataUrl + cover}}
-        />
+        <Image style={styles.cover} source={{uri: dataUrl + cover}} />
         <View style={styles.detail}>
           <Text style={styles.title}>{name}</Text>
           <Text style={styles.from}>{from}</Text>
@@ -71,7 +90,7 @@ const styles = StyleSheet.create({
   },
   from: {
     fontStyle: 'italic',
-    marginBottom: 20
+    marginBottom: 20,
   },
   content: {
     color: '#212529',

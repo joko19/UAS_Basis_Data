@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {FlatList, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  SafeAreaView,
+  SectionList,
+} from 'react-native';
 import {
   View,
   Container,
@@ -9,6 +15,7 @@ import {
   Input,
   Button,
   Text,
+  Row,
 } from 'native-base';
 import apiFood from './../config/endpoint';
 import ItemFood from './ItemFood';
@@ -18,6 +25,7 @@ class Menu extends Component {
     super(props);
     this.state = {
       data: [],
+      filterData: [],
       search: '',
       loading: false,
       animating: true,
@@ -26,8 +34,14 @@ class Menu extends Component {
     // this.handleClick = this.handleClick.bind(this);
   }
 
-  closeActivityIndicator = () => setTimeout(() => this.setState({
-    animating: false }), 60000)
+  closeActivityIndicator = () =>
+    setTimeout(
+      () =>
+        this.setState({
+          animating: false,
+        }),
+      60000,
+    );
 
   navigate = this.props.navigation;
 
@@ -69,7 +83,7 @@ class Menu extends Component {
     this.setState({
       loading: true,
     });
-    this.closeActivityIndicator()
+    this.closeActivityIndicator();
   }
 
   componentDidMount() {
@@ -80,16 +94,12 @@ class Menu extends Component {
     }
   }
 
-  // componentDidUpdate() {
-  //   this.loadData();
-  // }
-
   renderHeader = () => {
     return (
       <Header searchBar rounded style={{backgroundColor: 'white'}}>
         <Item style={{backgroundColor: '#F5F4F4'}}>
           <Input
-            style={{paddingLeft: 15, color: '#1b1717'}}
+            style={styles.input}
             // value={this.state.search}
             autoCorrect={false}
             onChangeText={text => this.searchFilterFunction(text)}
@@ -105,31 +115,65 @@ class Menu extends Component {
   };
 
   render() {
-    const animating = this.state.animating;
+    const dataList = [
+      {
+        title: 'From gresik',
+        horizontal: true,
+        data: this.state.data.filter(item => item.from == 'GRESIK'),
+      },
+      {
+        title: 'All around you',
+        horizontal: true,
+        data: this.state.data.filter(item => item.from !== 'GRESIK'),
+      },
+    ];
+
     return (
-      <View>
-        {this.state.loading == false ? (
-          <FlatList
-            data={this.state.data}
-            renderItem={({item}) => (
-              <ItemFood
-                id={item._id}
-                key={item._id}
-                img={item.cover}
-                title={item.name}
-                navigation={this.navigate}
-              />
+      <View style={styles.container}>
+        <this.renderHeader></this.renderHeader>
+        <SafeAreaView style={{flex: 1}}>
+          <SectionList
+            contentContainerStyle={{}}
+            stickySectionHeadersEnabled={false}
+            sections={dataList}
+            keyExtractor={(item, index) => item + index}
+            renderSectionHeader={({section}) => (
+              <>
+                <View style={{marginTop:15, backgroundColor:'white', paddingBottom:15}}>
+                  <Text style={styles.sectionHeader}>{section.title}</Text>
+                  {section.horizontal ? (
+                    <FlatList
+                      horizontal
+                      data={section.data}
+                      renderItem={({item}) => (
+                        <ItemFood
+                          id={item._id}
+                          img={item.cover}
+                          title={item.name}
+                          navigation={this.navigate}
+                        />
+                      )}
+                      showsHorizontalScrollIndicator={false}
+                    />
+                  ) : null}
+                </View>
+              </>
             )}
-            keyExtractor={item => item._id}
-            ItemSeparatorComponent={this.renderSeparator}
-            ListHeaderComponent={this.renderHeader}
-            stickyHeaderIndices={[0]}
+            renderItem={({item, section}) => {
+              if (section.horizontal) {
+                return null;
+              }
+              return (
+                <ItemFood
+                  id={item._id}
+                  img={item.cover}
+                  title={item.name}
+                  navigation={this.navigate}
+                />
+              );
+            }}
           />
-        ) : (
-          <View style={styles.loading}>
-            <ActivityIndicator animating = {animating} size="large" color="#0000ff" />
-          </View>
-        )}
+        </SafeAreaView>
       </View>
     );
   }
@@ -137,42 +181,14 @@ class Menu extends Component {
 
 export default Menu;
 
-// function Index({navigation}) {
-//   const [data, setData] = useState([]);
-
-//   const loadData = async () => {
-//     const response = await apiFood.index();
-//     setData(response.data);
-//   };
-
-//   useEffect(() => {
-//     loadData();
-//   }, []);
-
-//   return (
-//     <View>
-//       <ScrollView>
-//         {data.map((item, index) => {
-//           return (
-//             <ItemFood
-//               id={item._id}
-//               key={item._id}
-//               img={item.cover}
-//               title={item.name}
-//               navigation={navigation}
-//             />
-//           );
-//         })}
-//       </ScrollView>
-//     </View>
-//   );
-// }
-
-// export default Index;
-
 const styles = StyleSheet.create({
+  input: {
+    paddingLeft: 15,
+    color: '#1b1717',
+    fontFamily: 'Inter-Medium',
+  },
   container: {
-    backgroundColor: 'white',
+    flex: 1,
   },
   buttonPrimary: {
     height: 30,
@@ -180,6 +196,14 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     borderWidth: 5,
+  },
+  sectionHeader: {
+    paddingLeft:15,
+    fontWeight: '800',
+    fontSize: 24,
+    marginTop: 20,
+    marginBottom: 5,
+    fontFamily: 'Inter-Bold',
   },
   title: {
     fontSize: 30,

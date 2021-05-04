@@ -12,44 +12,30 @@ export default function ItemFood(props) {
   };
   return (
     <TouchableOpacity onPress={handleToDetail}>
-      <View style={styles.containerItem}>
-        <Text style={styles.title}>{props.title}</Text>
-        <Image style={styles.imgPost} source={{uri: dataUrl + props.img}} />
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <View
-            style={{
-              flexDirection: 'column',
-              flex: 0.95,
-              justifyContent: 'center',
-            }}></View>
-        </View>
+      <View style={styles.item}>
+        <Image
+          source={{uri: dataUrl + props.img}}
+          style={styles.itemPhoto}
+          resizeMode="cover"
+        />
+        <Text style={styles.itemText}>{props.title}</Text>
       </View>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  containerItem: {
-    marginBottom: 25,
-  },
-  username: {
-    flexWrap: 'wrap',
-    margin: 5,
-    alignSelf: 'center',
-    fontSize: 16,
-  },
-  cover: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    margin: 5,
-  },
-  imgPost: {
-    aspectRatio: 1.5,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '500',
+  item: {
     margin: 10,
+  },
+  itemPhoto: {
+    borderRadius: 15,
+    width: 200,
+    height: 200,
+  },
+  itemText: {
+    marginTop: 5,
+    fontSize: 16,
+    fontFamily: 'Inter-Regular'
   },
 });
