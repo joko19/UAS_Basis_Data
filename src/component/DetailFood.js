@@ -1,20 +1,15 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
-import apiFood from './../config/endpoint';
-import {dataUrl} from './../config/config';
-// import Icon from 'react-native-vector-icons/Ionicons';
 import {
   Container,
   Header,
   Left,
   Body,
-  Right,
   Title,
-  Subtitle,
   Button,
-  Content,
   Icon,
 } from 'native-base';
+import firestore from '@react-native-firebase/firestore';
 
 function DetailFood(props) {
   const id = props.route.params.id;
@@ -24,35 +19,37 @@ function DetailFood(props) {
   const [desc, setDesc] = useState('');
 
   const loadData = async () => {
-    const getData = await apiFood.detail(id);
-    setName(getData.data.response[0].name);
-    setCover(getData.data.response[0].cover);
-    setFrom(getData.data.response[0].from);
-    setDesc(getData.data.response[0].desc);
-  };
-
-  const handleBack = () => {
-    props.navigation.navigate('listFood');
+    await firestore()
+    .collection('food')
+    .doc(id)
+    .get()
+    .then(result => {
+      console.log(result.data())
+      setName(result.data().name);
+      setCover(result.data().photo);
+      setFrom(result.data().from);
+      setDesc(result.data().desc);
+    });
   };
 
   useEffect(() => {
     loadData();
   }, []);
+  
+  const handleBack = () => {
+    props.navigation.navigate('listFood');
+  };
+
 
   return (
     <Container>
       <Header>
-        <Left>
-          <Button transparent onPress={handleBack}>
-            <Icon name="chevron-back" />
-          </Button>
-        </Left>
         <Body>
           <Title style={{fontFamily: 'Inter-Bold'}}>Detail Food</Title>
         </Body>
       </Header>
       <ScrollView>
-        <Image style={styles.cover} source={{uri: dataUrl + cover}} />
+        <Image style={styles.cover} source={{uri: 'https://onwisata.com' + cover}} />
         <View style={styles.detail}>
           <Text style={styles.title}>{name}</Text>
           <Text style={styles.from}>{from}</Text>

@@ -19,9 +19,9 @@ function Menu({navigation}) {
     <View style={styles.container}>
       <View style={styles.centerView}>
         <Image style={styles.image} source={require('./../img/SVGFood.png')} />
-        <Text style={styles.bold}>Find your food</Text>
+        <Text style={styles.bold}>Keragaman Kuliner Nusantara</Text>
         <Text style={styles.p}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elit.
+          Beragam jenis makanan khas Indonesia
         </Text>
       </View>
       <Button

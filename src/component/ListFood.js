@@ -1,194 +1,67 @@
-import React, {Component} from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  ActivityIndicator,
-  SafeAreaView,
-  SectionList,
-} from 'react-native';
-import {
-  View,
-  Container,
-  Header,
-  Item,
-  Icon,
-  Input,
-  Button,
-  Text,
-  Row,
-} from 'native-base';
-import apiFood from './../config/endpoint';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, ScrollView} from 'react-native';
+import {View, Header, Body, Title} from 'native-base';
 import ItemFood from './ItemFood';
+import firestore from '@react-native-firebase/firestore';
 
-class Menu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      filterData: [],
-      search: '',
-      loading: false,
-      animating: true,
-      itemsCount: 5,
-    };
-    this.arrayholder = [];
-    // this.handleClick = this.handleClick.bind(this);
-  }
+function Index({navigation}) {
+  const [data, setData] = useState([]);
 
-  closeActivityIndicator = () =>
-    setTimeout(
-      () =>
-        this.setState({
-          animating: false,
-        }),
-      60000,
-    );
-
-  navigate = this.props.navigation;
-
-  loadData = async () => {
-    const response = await apiFood.index();
-    this.setState({
-      data: response.data,
-    });
-
-    this.arrayholder = response.data;
-  };
-
-  handleSearch = async data => {
-    const response = await apiFood.search(data);
-    this.setState({
-      data: response.data,
-    });
-  };
-
-  onChange = e => {
-    this.setState({
-      [e.target.id]: e.target.value,
-    });
-    this.handleSearch(e.target.value);
-  };
-
-  searchFilterFunction = text => {
-    const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.toUpperCase()}`;
-      const textData = text.toUpperCase();
-
-      return itemData.indexOf(textData) > -1;
-    });
-
-    this.setState({data: newData});
-  };
-
-  componentDidMount() {
-    this.setState({
-      loading: true,
-    });
-    this.closeActivityIndicator();
-  }
-
-  componentDidMount() {
-    if (this.loadData()) {
-      this.setState({
-        loading: false,
+  const loadData = async () => {
+    var arr = [];
+    await firestore()
+      .collection('food')
+      .get()
+      .then(result => {
+        result.forEach(res => {
+          console.log(res);
+          const data = res.data();
+          const food = {
+            name: data.name,
+            from: data.from,
+            desc: data.desc,
+            photo: data.photo,
+            id: res.id,
+          };
+          arr.push(food);
+        });
       });
-    }
-  }
-
-  renderHeader = () => {
-    return (
-      <Header searchBar rounded style={{backgroundColor: 'white'}}>
-        <Item style={{backgroundColor: '#F5F4F4'}}>
-          <Input
-            style={styles.input}
-            // value={this.state.search}
-            autoCorrect={false}
-            onChangeText={text => this.searchFilterFunction(text)}
-            // autoCompleteType={'off'}
-            placeholder="Search your food..."
-          />
-        </Item>
-        <Button transparent>
-          <Text>Search</Text>
-        </Button>
-      </Header>
-    );
+    setData(arr);
+    console.log(arr);
+    this.arrayholder = arr;
   };
 
-  render() {
-    var sortRandomData = this.state.data.sort(() => 0.5 - Math.random()).splice(0, this.state.itemsCount)
-    var allData = this.state.data.splice(0, this.state.itemsCount)
-    const dataList = [
-      {
-        title: 'Recommended for you',
-        horizontal: true,
-        data: sortRandomData,
-      },
-      {
-        title: 'From gresik',
-        horizontal: true,
-        data: this.state.data.filter(item => item.from == 'GRESIK'),
-      },
-      {
-        title: 'All around you',
-        horizontal: true,
-        data: allData,
-      },
-    ];
+  useEffect(() => {
+    loadData();
+  }, []);
 
-    return (
-      <View style={styles.container}>
-        <this.renderHeader></this.renderHeader>
-        <SafeAreaView style={{flex: 1}}>
-          <SectionList
-            contentContainerStyle={{}}
-            stickySectionHeadersEnabled={false}
-            sections={dataList}
-            keyExtractor={(item, index) => item + index}
-            renderSectionHeader={({section}) => (
-              <>
-                <View style={{marginTop:15, backgroundColor:'white', paddingBottom:15}}>
-                  <Text style={styles.sectionHeader}>{section.title}</Text>
-                  {section.horizontal ? (
-                    <FlatList
-                      horizontal
-                      data={section.data}
-                      renderItem={({item}) => (
-                        <ItemFood
-                          id={item._id}
-                          img={item.cover}
-                          title={item.name}
-                          navigation={this.navigate}
-                        />
-                      )}
-                      initialNumToRender={10}
-                      showsHorizontalScrollIndicator={false}
-                    />
-                  ) : null}
-                </View>
-              </>
-            )}
-            renderItem={({item, section}) => {
-              if (section.horizontal) {
-                return null;
-              }
-              return (
-                <ItemFood
-                  id={item._id}
-                  img={item.cover}
-                  title={item.name}
-                  navigation={this.navigate}
-                />
-              );
-            }}
-          />
-        </SafeAreaView>
-      </View>
-    );
-  }
+  return (
+    <View>
+      <Header>
+        <Body>
+          <Title style={{fontFamily: 'Inter-Bold'}}>
+            Makanan Khas Indonesia
+          </Title>
+        </Body>
+      </Header>
+      <ScrollView style={{marginBottom: 75}}>
+        {data.map((item, index) => {
+          return (
+            <ItemFood
+              id={item.id}
+              key={item._id}
+              img={item.photo}
+              title={item.name}
+              navigation={navigation}
+            />
+          );
+        })}
+      </ScrollView>
+    </View>
+  );
 }
 
-export default Menu;
+export default Index;
 
 const styles = StyleSheet.create({
   input: {
@@ -207,7 +80,7 @@ const styles = StyleSheet.create({
     borderWidth: 5,
   },
   sectionHeader: {
-    paddingLeft:15,
+    paddingLeft: 15,
     fontWeight: '800',
     fontSize: 24,
     marginTop: 20,

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "304293288522",
+    "project_id": "indonesian-food-dcf59",
+    "storage_bucket": "indonesian-food-dcf59.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304293288522:android:b1a424a722a3a8b04d64b3",
+        "android_client_info": {
+          "package_name": "com.indonesian_food"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "304293288522-bbebe7eq2l1g8kj0c51lhskak7n03i8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwYYTgzsuRK3mUNFSTHj8_BAp-QIy0_lg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "304293288522-bbebe7eq2l1g8kj0c51lhskak7n03i8f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

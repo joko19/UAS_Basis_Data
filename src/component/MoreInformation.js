@@ -7,8 +7,6 @@ function MoreInformation() {
       <Text style={styles.title}>Developed By</Text>
       <Text style={styles.name}>Joko Slamet</Text>
       <Text style={styles.text}>18050974030</Text>
-      <Text style={styles.name}>Yeremia Alfa Dio</Text>
-      <Text style={styles.text}>18050974002</Text>
       <Text style={styles.name}>Erlina Intan Pratiwi</Text>
       <Text style={styles.text}>18050974014</Text>
     </View>
@@ -19,7 +17,7 @@ export default MoreInformation;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#00c853',
+    backgroundColor: '#EDB',
     justifyContent: 'center',
     height: '100%',
     width: '100%',
