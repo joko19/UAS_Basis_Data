@@ -30,6 +30,7 @@ local.properties
 *.iml
 
 android/build
+*.hprof
 
 # node.js
 #
